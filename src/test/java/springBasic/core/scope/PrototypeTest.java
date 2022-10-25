@@ -11,28 +11,32 @@ import javax.annotation.PreDestroy;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class SingletonTest {
+public class PrototypeTest {
 
     @Test
     @DisplayName("")
-    public void singletonBeanFind() {
+    public void prototypeBeanFind() {
         // given
-        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(SingtonBean.class);
+        AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext(PrototypeBean.class);
 
         // when
-        SingtonBean singletonBean1 = ac.getBean(SingtonBean.class);
-        SingtonBean singletonBean2 = ac.getBean(SingtonBean.class);
-        System.out.println("singletonBean1 = " + singletonBean1);
-        System.out.println("singletonBean2 = " + singletonBean2);
+        System.out.println("find prototypeBean1");
+        PrototypeBean prototypeBean1 = ac.getBean(PrototypeBean.class);
+        System.out.println("find prototypeBean2");
+        PrototypeBean prototypeBean2 = ac.getBean(PrototypeBean.class);
+
+        System.out.println("prototypeBean1 = " + prototypeBean1);
+        System.out.println("prototypeBean2 = " + prototypeBean2);
 
         // then
-        assertThat(singletonBean1).isSameAs(singletonBean2);
+        assertThat(prototypeBean1).isNotSameAs(prototypeBean2);
+
         ac.close();
 
     }
 
-    @Scope("singleton")
-    static class SingtonBean {
+    @Scope("prototype")
+    static class PrototypeBean{
 
         @PostConstruct
         public void init() {
@@ -43,6 +47,5 @@ public class SingletonTest {
         public void destroy() {
             System.out.println("SingtonBean.destroy");
         }
-
     }
 }
